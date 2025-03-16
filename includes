@@ -1,1 +1,52 @@
+Internal Linking Code
+<?php
+// Function to fetch latest, popular, and random posts
+function wp_auto_internal_links() {
+    $latest_post = get_posts(['numberposts' => 1])[0];
+    $popular_post = get_posts(['numberposts' => 1, 'orderby' => 'comment_count'])[0];
+    $random_post = get_posts(['numberposts' => 1, 'orderby' => 'rand'])[0];
+
+    $links_html = '<div class="wp-auto-links-box">';
+    $links_html .= '<h3>Recommended Articles</h3>';
+    $links_html .= '<ul>';
+    $links_html .= '<li><a href="' . get_permalink($latest_post->ID) . '">' . $latest_post->post_title . '</a> (Latest)</li>';
+    $links_html .= '<li><a href="' . get_permalink($popular_post->ID) . '">' . $popular_post->post_title . '</a> (Popular)</li>';
+    $links_html .= '<li><a href="' . get_permalink($random_post->ID) . '">' . $random_post->post_title . '</a> (Random)</li>';
+    $links_html .= '</ul>';
+    $links_html .= '</div>';
+
+    return $links_html;
+}
+
+// Hook to add internal links to post content
+function wp_auto_insert_internal_links($content) {
+    if (is_single()) {
+        $content .= wp_auto_internal_links();
+    }
+    return $content;
+}
+add_filter('the_content', 'wp_auto_insert_internal_links');
+
+
+External Linking Code
+<?php
+function wp_auto_external_link() {
+    $fb_link = 'https://www.facebook.com/share/1RDmjqYGoH/';
+    $html = '<div class="wp-auto-links-box">';
+    $html .= '<h3>Follow Us on Facebook</h3>';
+    $html .= '<a href="' . esc_url($fb_link) . '" target="_blank">Click here to visit our Facebook page</a>';
+    $html .= '</div>';
+    
+    return $html;
+}
+
+// Hook to add external link to post content
+function wp_auto_insert_external_link($content) {
+    if (is_single()) {
+        $content .= wp_auto_external_link();
+    }
+    return $content;
+}
+add_filter('the_content', 'wp_auto_insert_external_link');
+
 
